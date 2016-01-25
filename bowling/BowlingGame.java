@@ -1,5 +1,9 @@
 package bowling;
 
+/**
+ * This is the old, more procedural version of the bowling game calculator.
+ * 
+ */
 public class BowlingGame {
 	private int[] rolls = new int[21]; //rolls table
 	private int current = 0; //current roll

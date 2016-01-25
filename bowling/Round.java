@@ -9,15 +9,31 @@ public class Round {
 	}
 	private BowlingApp parentGame;
 	
-	public void addRoll(int pinsHit) { // addRoll: add a new roll to the round.
+	/**
+	 * Adds a new roll with the given number of pins knocked down to the round.
+	 * 
+	 * @param pinsHit	number	the number of pins knocked down
+	 */
+	public void addRoll(int pinsHit) {
 		rolls.add(new Roll(pinsHit));
 		//System.out.println ("Adding roll; score = " + pinsHit + ".");
 	}
 	
-	public ArrayList<Roll> getRollList() { // getRollList: returns the list of rolls in the round.
+	/**
+	 * Used to get the current list of rolls from the round.
+	 * 
+	 * @return	list of rolls from the current round
+	 */
+	public ArrayList<Roll> getRollList() {
 		return rolls;
 	}
 	
+	/**
+	 * Returns the sum of points from all the rolls within the current round, without adding any bonuses
+	 * from strikes or spares.
+	 * 
+	 * @return	the sum of points of the current round.
+	 */
 	public int getLocalSum () {
 		int sum = 0;
 		for (Roll roll : rolls) {
@@ -26,7 +42,12 @@ public class Round {
 		return sum;
 	}
 	
-	public boolean isFinished() { // isFinished: returns true if the round is finished
+	/**
+	 * Checks if the round is finished, analyzing each possible case. Works for the tenth round as well.
+	 * 
+	 * @return	true if the round is finished, otherwise false.
+	 */
+	public boolean isFinished() {
 		if (rolls.size() > 0) {
 			if (getFrameNumber() != 9 && rolls.get(0).getValue() == 10) { //strike, ordinary frame
 				return true;
@@ -44,25 +65,46 @@ public class Round {
 			return false;
 	}
 	
-	public int getFrameNumber() { // getFrameNumber: returns the index of the current frame (starting from 0)
+	/**
+	 * Returns the number of the current round (first round being 0 and so on).
+	 * 
+	 *  @return	the number of the current round
+	 */
+	public int getFrameNumber() {
 		return parentGame.getRoundList().indexOf(this);
 	}
 	
-	public boolean IsLastFrame() { // isLastFrame: returns true if the current frame is currently the last frame on the list 
+	/**
+	 * Checks if the current round is CURRENTLY the last round in the game.
+	 * 
+	 * @return	true if the current round is currently the last round, otherwise false.
+	 */
+	public boolean IsLastFrame() {
 		if (parentGame.getRoundList().size() - 1 == getFrameNumber()) {
 			return true;
 		}
 		return false;
 	}
 
-	public Round getNextFrame() { // getNextFrame: returns the reference to the following frame, if it exists.
+	/**
+	 * Returns the next round, providing it exists.
+	 * 
+	 * @return	the next round
+	 */
+	public Round getNextFrame() {
 		if (!IsLastFrame());
 		{
 			return parentGame.getRoundList().get(getFrameNumber()+1);
 		}
 	}
 	
-	public int getRoundScore() { // getRoundScore: returns the overall score from the round, including bonuses from strike and spare.
+	/**
+	 * Returns the overall score from the round, including bonuses from next rounded awarded
+	 * by getting a strike or a spare.
+	 * 
+	 * @return the overall score from the round.
+	 */
+	public int getRoundScore() {
 		int score = 0;
 		int localSum = getLocalSum();
 		score = localSum;
@@ -80,13 +122,24 @@ public class Round {
 		return score;
 	}
 	
-	public int getNextRoll() { //get one follow
+	/**
+	 * Returns the value of the first roll in the next round, if it exists.
+	 * 
+	 * @return the value of the first roll in the next round, otherwise 0.
+	 */
+	public int getNextRoll() { 
 		if (!IsLastFrame()) {
 			return getNextFrame().getRollList().get(0).getValue();
 		}
 		return 0;
 	}
 	
+	/**
+	 * Returns the sum of the values of the closest two rolls in following round(s).
+	 * 
+	 * @return	the value of the closest two rolls in following round(s). If there's only one such roll,
+	 * 			returns its value. If there are no such rolls, returns 0.
+	 */
 	public int getNextTwoRolls() {
 		if (!IsLastFrame()) {
 			if (getNextFrame().getRollList().size() == 2) {
